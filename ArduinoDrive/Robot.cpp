@@ -2,6 +2,7 @@
 #include "Robot.h"
 #include "Motor.h"
 #include <math.h>
+#include <EEPROM.h>
 
 Robot::Robot(int motorA, int enA, int in1, int in2, int motorB, int enB,int  in3, int in4, float d_w, float w, float n){
   //Motor mA(motorA, enA, in1, in2);
@@ -14,9 +15,11 @@ Robot::Robot(int motorA, int enA, int in1, int in2, int motorB, int enB,int  in3
   s_a = sin(alpha);
   theta = 0;
   u_x = cos(theta);
-  u_y = sin(theta);
+  //u_y = sin(theta);
   c = 0;
-  
+  address = 0;
+  prevTime = millis();
+  full = false;
 }
 
 void Robot::increment(boolean dir){
@@ -29,15 +32,26 @@ void Robot::increment(boolean dir){
     math(true);
   }
 
-    if(c % 4 == 0){
+    if(millis() - prevTime > 300){
       Serial.println(p_x);
       Serial.println(p_y);
+      //Serial.println(theta);
+      prevTime = millis();
     }
 
-  //Serial.println(u_y);
-//  Serial.print("y = ");
-//  Serial.print(p_y);
-//  Serial.println();
+//EEPROM CANNOT STORE NEGATIVE VALUES
+
+//  if(!full && millis() - prevTime > 1000){
+//    EEPROM.update(address, p_x);
+//    address++;
+//    EEPROM.update(address, p_y);
+//    address++;
+//    if (address == EEPROM.length()) {
+//      address = 0;
+//      full = true;
+//    }
+//    Serial.println(p_y);
+//  }
 }
 
 void Robot::math(boolean negative){
@@ -58,6 +72,8 @@ void Robot::math(boolean negative){
 
 void Robot::moveForward(int steps, int mLeft, int mRight, boolean correct){
    // Set Motor A forward
+   int currA = mA -> count;
+   int currB = mB -> count;
    digitalWrite(mA -> in1, HIGH);
    digitalWrite(mA -> in2, LOW);
  
@@ -65,7 +81,7 @@ void Robot::moveForward(int steps, int mLeft, int mRight, boolean correct){
    digitalWrite(mB -> in1, HIGH);
    digitalWrite(mB -> in2, LOW);
    
-  while(mA -> count < steps && mB -> count < steps){
+  while(mA -> count - currA < steps && mB -> count - currB < steps){
       analogWrite(mA -> en, min(mRight, 255));
       analogWrite(mB -> en, min(mLeft, 255));
 //      Serial.println(mA -> count);

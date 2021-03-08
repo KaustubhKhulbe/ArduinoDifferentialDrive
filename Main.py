@@ -34,16 +34,25 @@ while True:
     try:
         x_val = float(x)
         y_val = float(y)
+        print(x_val)
+        print(y_val)
+        x_vals.append(x_val)
+        y_vals.append(y_val)
     except ValueError:
         print("Not a float")
 
     #plt.pause(0.01)
+    plt.plot(x_vals, y_vals, c='blue')
+    #plt.scatter(x_vals[-1], y_vals[-1], c='red')
 
-    x_vals.append(x_val)
-    y_vals.append(y_val)
-    plt.scatter(x_vals, y_vals, c='black')
-    plt.scatter(x_vals[-1], y_vals[-1], c='red')
     plt.pause(0.000001)
+
+
+
+    '''if len(x_vals) > 70:
+        x_vals.pop(0)
+        y_vals.pop(0)
+    plt.clf()'''
 
 else:
     print("Exiting")

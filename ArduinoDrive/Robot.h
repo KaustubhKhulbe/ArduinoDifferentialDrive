@@ -15,6 +15,8 @@ class Robot
     float p_x, p_y;
     float c_a, s_a;
     int c;
+    int address, prevTime;
+    boolean full;
 
     void moveForward(int steps, int mLeft, int mRight, boolean correct);
     
